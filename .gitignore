@@ -1,0 +1,5 @@
+.vscode/
+dist/
+node_modules/
+mock-data/
+package-lock.json

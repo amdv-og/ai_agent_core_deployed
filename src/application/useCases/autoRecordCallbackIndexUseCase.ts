@@ -1,0 +1,57 @@
+import { Inject, Service } from "typedi";
+
+import * as Services from "../../infrastructure/services/imports"
+import * as Entities from "../../core/entities/imports";
+
+
+/** * Data structure for auto-record index callback use case.
+ * Contains session identifier and callback data.
+ * @interface AutoRecordCallbackIndexData
+ * @property {string} session - The session identifier for the callback.
+ * @property {Entities.CallbackData} callbackData - The data associated with the callback.
+ * * This interface is used to pass data to the use case for processing auto-record index callbacks.
+ */
+export interface AutoRecordCallbackIndexData {
+  session: string,
+  callbackData: Entities.CallbackData
+}
+
+
+/**
+ * Use case for handling auto-record index callbacks.
+ * It processes the callback data and triggers the next step in the workflow.
+ */
+@Service()
+export class AutoRecordCallbackIndexUseCase {
+  private readonly context: Entities.WorkflowContext = {
+    workflow: Entities.Workflow.AUTORECORD,
+    step: Entities.Step.INDEX
+  };
+  private readonly nextContext: Entities.WorkflowContext = {
+    workflow: Entities.Workflow.AUTORECORD,
+    step: Entities.Step.CALC
+  };
+
+  constructor(
+    @Inject(Services.TOKENS.IAISvcClient) private readonly aiSvcClient: Services.IAISvcClient,
+    @Inject(Services.TOKENS.ITrackingService) private readonly trackingService: Services.ITrackingService,
+  ) { }
+
+  /**
+   * Executes the use case for processing the auto-record index callback.
+   * 
+   * @param data - The data containing session and callback information
+   */
+  async execute(data: AutoRecordCallbackIndexData): Promise<void> {
+
+    await this.trackingService.trackSuccess(this.context, data.session);
+
+    try {
+      await this.aiSvcClient.calcDocument(this.context, data.session, null, Entities.Callback.AUTORECORD_CALC);
+    }
+    catch (error) {
+      await this.trackingService.trackError(this.nextContext, data.session, error instanceof Error ? error.message : String(error));
+      return;
+    }
+  }
+}

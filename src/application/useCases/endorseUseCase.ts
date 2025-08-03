@@ -1,0 +1,41 @@
+import { Inject, Service } from "typedi";
+
+import * as Services from "../../infrastructure/services/imports"
+import * as Entities from "../../core/entities/imports";
+
+/** Data structure for endorse use case.
+ * Contains session identifier and metadata.
+ * This interface is used to pass data to the use case for processing the endorse operation.
+ * @interface EndorseData
+ * @property {string} session - The session identifier for the endorse process.
+ * @property {Entities.MetaData} metaData - The metadata associated with the endorse operation.
+ */
+export interface EndorseData {
+  session: string,
+  metaData: Entities.MetaData,
+}
+
+/** Use case for handling endorse operations.
+ * It processes the document and triggers the next step in the workflow.
+ */
+@Service()
+export class EndorseUseCase {
+
+  constructor(
+    @Inject(Services.TOKENS.IAISvcClient) private readonly aiSvcClient: Services.IAISvcClient
+  ) { }
+
+  /**
+   * Executes the use case for processing the endorse operation.
+   * 
+   * @param data - The data containing session identifier and metadata
+   */
+  async execute(data: EndorseData): Promise<void> {
+    const context: Entities.WorkflowContext = {
+      workflow: Entities.Workflow.ENDORSE,
+      step: Entities.Step.ENDORSE
+    };
+
+    await this.aiSvcClient.endorseDocument(context, data.session, data.metaData, Entities.Callback.ENDORSE);
+  }
+}
