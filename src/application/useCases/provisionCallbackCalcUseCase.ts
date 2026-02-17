@@ -1,8 +1,10 @@
 import { Inject, Service } from "typedi";
 import { Readable } from "stream";
 
-import * as Services from "../../infrastructure/services/imports"
+import { TOKENS } from "../../core/tokens";
+import * as Interfaces from "../../core/interfaces/imports";
 import * as Entities from "../../core/entities/imports";
+import * as Services from "../../infrastructure/services/imports";
 
 /** Data structure for provision callback calc use case.
  * Contains session identifier and callback data. 
@@ -27,9 +29,9 @@ export class ProvisionCallbackCalcUseCase {
   };
 
   constructor(
-    @Inject(Services.TOKENS.IIntegrationService) private readonly integrationService: Services.IIntegrationService,
-    @Inject(Services.TOKENS.ITrackingService) private readonly trackingService: Services.ITrackingService,
-    @Inject(Services.TOKENS.IBlobService) private readonly blobService: Services.IBlobService,
+    @Inject(TOKENS.IIntegrationService) private readonly integrationService: Interfaces.IIntegrationService,
+    @Inject(TOKENS.ITrackingService) private readonly trackingService: Interfaces.ITrackingService,
+    @Inject(TOKENS.IBlobService) private readonly blobService: Interfaces.IBlobService,
     @Inject() private readonly metaDataService: Services.MetaDataService,
   ) { }
 

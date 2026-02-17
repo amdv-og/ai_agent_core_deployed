@@ -11,22 +11,24 @@ export class ChoiceService {
    * A list of valid services that can be included in a choice.
    * Each service must have a corresponding level that is a non-negative number.
    */
-    private readonly services = [
+  private readonly services = [
     "Recognition",
     "Provision",
     "Indexing",
-    "GeneralIndexing",
+    "TransactionIndexing",
     "PartyClauseIndexing",
-    "AcknowledgmentIndexing",
-    "ExhibitIndexing",
+    "AcknowledgmentIndexing", // Notary Acknowledgment -
+    "ExhibitIndexing", // Property
     "MonetaryInfoIndexing",
     "ConfidentialIndexing",
-    "RecitalIndexing",
+    "RecitalIndexing",  // Reference
     "EndorsementIndexing",
     "VitalIndexing",
     "CourtIndexing",
-    "SemanticEnrichment",
+    "LegalEnrichment",
     "ChainEnrichment",
+    "HistoryEnrichment",
+    "PartyEnrichment",
     "FeeComputation",
     "Validation",
     "ClassIndexing",
@@ -35,6 +37,9 @@ export class ChoiceService {
     "Confirmation",
     "Certification",
     "FineTuning",
+    "Redact",
+    "Record",
+    "Abstract",
   ];
 
   /**

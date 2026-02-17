@@ -3,31 +3,29 @@ import { useContainer as routingUseContainer, createExpressServer } from "routin
 import { Container } from "typedi";
 import request from "supertest";
 
-import { Notice } from "../../core/entities/notice";
 import * as Services from "../../infrastructure/services/imports";
 import { InternalError, NotFoundError } from "../../core/entities/error";
-import { RefineUseCase } from "../../application/useCases/refineUseCase";
-import { RefineController } from "../../api/controllers/refineController";
+import { ReprocessUseCase } from "../../application/useCases/reprocessUseCase";
+import { ReprocessController } from "../../api/controllers/reprocessController";
 
-jest.mock("../../application/useCases/refineUseCase");
+jest.mock("../../application/useCases/reprocessUseCase");
 
 
-describe("RefineController Integration", () => {
+describe("ReprocessController Integration", () => {
     let app: any;
-    let useCaseMock: jest.Mocked<RefineUseCase>;
-    const url = "/refine/test-session/party";
-    const incorrectSegmentUrl = "/refine/test-session/incorrect-segment";
-    const notice:Notice = { message: "This is a test notice" };
+    let useCaseMock: jest.Mocked<ReprocessUseCase>;
+    const url = "/reprocess/test-session/party";
+    const incorrectSegmentUrl = "/reprocess/test-session/incorrect-segment";
 
     beforeAll(() => {
         routingUseContainer(Container);
 
-        useCaseMock = new (RefineUseCase as any)();
+        useCaseMock = new (ReprocessUseCase as any)();
 
-        Container.set(RefineUseCase, useCaseMock);
+        Container.set(ReprocessUseCase, useCaseMock);
 
         app = createExpressServer({
-            controllers: [RefineController],
+            controllers: [ReprocessController],
             defaultErrorHandler: false,
         });
     });
@@ -41,7 +39,6 @@ describe("RefineController Integration", () => {
 
         const response = await request(app)
             .post(url)
-            .send(notice)
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({});
@@ -62,7 +59,6 @@ describe("RefineController Integration", () => {
 
         const response = await request(app)
             .post(incorrectSegmentUrl)
-            .send(notice)
 
         expect(response.status).toBe(400);
         expect(response.body.error).toMatch("Invalid segment");
@@ -73,7 +69,6 @@ describe("RefineController Integration", () => {
 
         const response = await request(app)
             .post(url)
-            .send(notice)
 
         expect(useCaseMock.execute).toHaveBeenCalled();
         expect(response.status).toBe(404);
@@ -85,7 +80,6 @@ describe("RefineController Integration", () => {
 
         const response = await request(app)
             .post(url)
-            .send(notice)
 
         expect(useCaseMock.execute).toHaveBeenCalled();
         expect(response.status).toBe(500);
@@ -97,7 +91,6 @@ describe("RefineController Integration", () => {
 
         const response = await request(app)
             .post(url)
-            .send(notice)
 
         expect(useCaseMock.execute).toHaveBeenCalled();
         expect(response.status).toBe(500);

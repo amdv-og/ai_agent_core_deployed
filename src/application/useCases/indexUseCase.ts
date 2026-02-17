@@ -1,7 +1,8 @@
 import { Inject, Service } from "typedi";
 import { Readable } from "stream";
 
-import * as Services from "../../infrastructure/services/imports"
+import { TOKENS } from "../../core/tokens";
+import * as Interfaces from "../../core/interfaces/imports";
 import * as Entities from "../../core/entities/imports";
 import { UseCaseHelper } from "../utils/useCaseHelper";
 
@@ -30,9 +31,8 @@ export class IndexUseCase {
     };
 
     constructor(
-        @Inject(Services.TOKENS.IBlobService) private readonly blobService: Services.IBlobService,
-        @Inject(Services.TOKENS.IAISvcClient) private readonly aiSvcClient: Services.IAISvcClient,
-        @Inject(Services.TOKENS.ITrackingService) private readonly trackingService: Services.ITrackingService,
+        @Inject(TOKENS.IBlobService) private readonly blobService: Interfaces.IBlobService,
+        @Inject(TOKENS.ITrackingService) private readonly trackingService: Interfaces.ITrackingService,
         @Inject() private readonly helper: UseCaseHelper,
     ) { }
 
@@ -43,7 +43,7 @@ export class IndexUseCase {
      * @returns {Promise<string>} - Returns the session identifier for the indexed document
      */
     async execute(data: IndexData): Promise<string> {
-        const session = await this.helper.index(this.context, data.documentType, data.stream, data.choice, Entities.Callback.AUTORECORD_INDEX);
+        const session = await this.helper.index(this.context, data.documentType, data.stream, data.choice, Entities.Callback.INDEX);
         return session;
     }
 }

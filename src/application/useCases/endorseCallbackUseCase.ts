@@ -1,7 +1,8 @@
 import { Inject, Service } from "typedi";
 import { Readable } from "stream";
 
-import * as Services from "../../infrastructure/services/imports"
+import { TOKENS } from "../../core/tokens";
+import * as Interfaces from "../../core/interfaces/imports";
 import * as Entities from "../../core/entities/imports";
 
 /** Data structure for endorse callback use case.
@@ -27,9 +28,9 @@ export class EndorseCallbackUseCase {
   };
 
   constructor(
-    @Inject(Services.TOKENS.IIntegrationService) private readonly integrationService: Services.IIntegrationService,
-    @Inject(Services.TOKENS.ITrackingService) private readonly trackingService: Services.ITrackingService,
-    @Inject(Services.TOKENS.IBlobService) private readonly blobService: Services.IBlobService,
+    @Inject(TOKENS.IIntegrationService) private readonly integrationService: Interfaces.IIntegrationService,
+    @Inject(TOKENS.ITrackingService) private readonly trackingService: Interfaces.ITrackingService,
+    @Inject(TOKENS.IBlobService) private readonly blobService: Interfaces.IBlobService,
 
   ) { }
 
@@ -40,7 +41,7 @@ export class EndorseCallbackUseCase {
    */
   async execute(data: EndorseCallbackData): Promise<void> {
 
-    if (data.callbackData.status !== Entities.CallbackStatus.SUCCESS) {
+    if (data.callbackData.status !== Entities.CallbackStatus.COMPLETED) {
       await this.trackingService.trackError(this.context, data.session, `Callback status is not success: ${data.callbackData.data}`);
       return;
     }

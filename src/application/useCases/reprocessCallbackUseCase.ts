@@ -1,45 +1,47 @@
 import { Inject, Service } from "typedi";
 import { Readable } from "stream";
 
-import * as Services from "../../infrastructure/services/imports"
+import { TOKENS } from "../../core/tokens";
+import * as Interfaces from "../../core/interfaces/imports";
 import * as Entities from "../../core/entities/imports";
+import * as Services from "../../infrastructure/services/imports";
 
-/** Data structure for refine callback use case.
+/** Data structure for reprocess callback use case.
  * Contains session identifier and callback data. 
- * This interface is used to pass data to the use case for processing the refine callback.
- * @interface RefineCallbackData
- * @property {string} session - The session identifier for the refine process.
+ * This interface is used to pass data to the use case for processing the reprocess callback.
+ * @interface ReprocessCallbackData
+ * @property {string} session - The session identifier for the reprocess process.
  * @property {Entities.CallbackData} callbackData - The data associated with the callback, containing necessary information for processing.
  */
-export interface RefineCallbackData {
+export interface ReprocessCallbackData {
   session: string,
   callbackData: Entities.CallbackData
 }
 
-/** Use case for handling refine callback.
+/** Use case for handling reprocess callback.
  * It processes the document and triggers the next step in the workflow.
  */
 @Service()
-export class RefineCallbackUseCase {
+export class ReprocessCallbackUseCase {
   private readonly context: Entities.WorkflowContext = {
-    workflow: Entities.Workflow.REFINE,
-    step: Entities.Step.REFINE
+    workflow: Entities.Workflow.REPROCESS,
+    step: Entities.Step.REPROCESS
   };
 
   constructor(
-    @Inject(Services.TOKENS.IIntegrationService) private readonly integrationService: Services.IIntegrationService,
-    @Inject(Services.TOKENS.ITrackingService) private readonly trackingService: Services.ITrackingService,
-    @Inject(Services.TOKENS.IBlobService) private readonly blobService: Services.IBlobService,
+    @Inject(TOKENS.IIntegrationService) private readonly integrationService: Interfaces.IIntegrationService,
+    @Inject(TOKENS.ITrackingService) private readonly trackingService: Interfaces.ITrackingService,
+    @Inject(TOKENS.IBlobService) private readonly blobService: Interfaces.IBlobService,
     @Inject() private readonly metaDataService: Services.MetaDataService,
   ) { }
 
 
   /**
-   * Executes the use case for processing the refine callback.
+   * Executes the use case for processing the reprocess callback.
    * 
    * @param data - The data containing session identifier and callback data
    */
-  async execute(data: RefineCallbackData): Promise<void> {
+  async execute(data: ReprocessCallbackData): Promise<void> {
 
     let stream: Readable;
     let metaData: Entities.MetaData;

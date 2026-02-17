@@ -30,7 +30,7 @@ export class CallbackService {
             return false;
         }
 
-        if (callback.status !== Entities.CallbackStatus.SUCCESS) {
+        if (callback.status !== Entities.CallbackStatus.COMPLETED) {
             return false;
         }
         return true;

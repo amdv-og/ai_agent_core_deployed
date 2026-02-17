@@ -83,7 +83,7 @@ export class DemoIntegrationService implements IIntegrationService {
      */
     async processRefine(session: string, data: MetaData): Promise<void> {
         const fullPath = await this.saveJson(session, "refine", "metadata.json", data);
-        console.log(`Info: workflow:${Workflow.REFINE}, session: ${session}. Metadata saved to ${fullPath}`);
+        console.log(`Info: workflow:${Workflow.REPROCESS}, session: ${session}. Metadata saved to ${fullPath}`);
     }
 
     /** Processes the calc step by saving metadata to a JSON file.

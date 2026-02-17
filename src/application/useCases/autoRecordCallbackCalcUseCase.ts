@@ -1,8 +1,8 @@
 
 import { Inject, Service } from "typedi";
-import { Readable } from "stream";
 
-import * as Services from "../../infrastructure/services/imports"
+import { TOKENS } from "../../core/tokens";
+import * as Interfaces from "../../core/interfaces/imports";
 import * as Entities from "../../core/entities/imports";
 import { UseCaseHelper } from "../utils/useCaseHelper";
 
@@ -34,9 +34,9 @@ export class AutoRecordCallbackCalcUseCase {
   };
 
   constructor(
-    @Inject(Services.TOKENS.IAISvcClient) private readonly aiSvcClient: Services.IAISvcClient,
-    @Inject(Services.TOKENS.IIntegrationService) private readonly integrationService: Services.IIntegrationService,
-    @Inject(Services.TOKENS.ITrackingService) private readonly trackingService: Services.ITrackingService,
+    @Inject(TOKENS.IRecordClient) private readonly recordClient: Interfaces.IRecordClient,
+    @Inject(TOKENS.IIntegrationService) private readonly integrationService: Interfaces.IIntegrationService,
+    @Inject(TOKENS.ITrackingService) private readonly trackingService: Interfaces.ITrackingService,
     @Inject() private readonly helper: UseCaseHelper,
   ) { }
 
@@ -52,7 +52,7 @@ export class AutoRecordCallbackCalcUseCase {
     metaData = await this.integrationService.record(data.session, metaData);
 
     try {
-      await this.aiSvcClient.endorseDocument(this.context, data.session, metaData, Entities.Callback.AUTORECORD_ENDORSE);
+      await this.recordClient.endorseDocument(this.context, data.session, metaData, Entities.Callback.AUTORECORD_ENDORSE);
     }
     catch (error) {
       await this.trackingService.trackError(this.nextContext, data.session, error instanceof Error ? error.message : String(error));

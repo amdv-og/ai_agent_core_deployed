@@ -1,6 +1,12 @@
+
 export const TOKENS = {
   IBlobService: "IBlobService",
   IIntegrationService: "IIntegrationService",
-  ITabulariumClient: "ITabulariumClient",
-  ITrackingService: "ITracingkService",
+  ITrackingService: "ITrackingService",
+  IRedactClient: "IRedactClient",
+  IReprocessClient: "IReprocessClient",
+  IComputeClient: "IComputeClient",
+  IIndexClient: "IIndexClient",
+  IRecordClient: "IRecordClient",
+  ISessionClient: "ISessionClient"
 } as const;

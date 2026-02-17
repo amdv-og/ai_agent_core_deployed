@@ -18,8 +18,8 @@ import { EndorseController } from "./api/controllers/endorseController";
 import { EndorseCallbackController } from "./api/controllers/endorseCallbackController";
 import { RedactController } from "./api/controllers/redactController";
 import { RedactCallbackController } from "./api/controllers/redactCallbackController";
-import { RefineController } from "./api/controllers/refineController";
-import { RefineCallbackController } from "./api/controllers/refineCallbackController";
+import { ReprocessController } from "./api/controllers/reprocessController";
+import { ReprocessCallbackController } from "./api/controllers/reprocessCallbackController";
 
 
 
@@ -37,8 +37,8 @@ useExpressServer(app, {
     CalcCallbackController,
     EndorseController,
     EndorseCallbackController,
-    RefineController,
-    RefineCallbackController,
+    ReprocessController,
+    ReprocessCallbackController,
     RedactController,
     RedactCallbackController,
     AutoRedactController,
@@ -55,9 +55,6 @@ useExpressServer(app, {
 
 
 dotenv.config(); // Ensure .env file is loaded
-if (!process.env.TABULARIUM_URL || !process.env.TABULARIUM_API_KEY) {
-  throw new Error("TABULARIUM_URL and TABULARIUM_API_KEY must be defined in .env file");
-}
 
 
 app.listen(3000, () => console.log("API running on http://localhost:3000"));

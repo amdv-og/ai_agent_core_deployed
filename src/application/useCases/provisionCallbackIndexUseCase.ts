@@ -1,6 +1,7 @@
 import { Inject, Service } from "typedi";
 
-import * as Services from "../../infrastructure/services/imports"
+import { TOKENS } from "../../core/tokens";
+import * as Interfaces from "../../core/interfaces/imports";
 import * as Entities from "../../core/entities/imports";
 
 /** Data structure for provision callback index use case.
@@ -30,8 +31,8 @@ export class ProvisionCallbackIndexUseCase {
   };
 
   constructor(
-    @Inject(Services.TOKENS.IAISvcClient) private readonly aiSvcClient: Services.IAISvcClient,
-    @Inject(Services.TOKENS.ITrackingService) private readonly trackingService: Services.ITrackingService,
+    @Inject(TOKENS.IComputeClient) private readonly computeClient: Interfaces.IComputeClient,
+    @Inject(TOKENS.ITrackingService) private readonly trackingService: Interfaces.ITrackingService,
   ) { }
 
   /**
@@ -44,7 +45,7 @@ export class ProvisionCallbackIndexUseCase {
     await this.trackingService.trackSuccess(this.context, data.session);
 
     try {
-      await this.aiSvcClient.calcDocument(this.context, data.session, null, Entities.Callback.PROVISION_CALC);
+      await this.computeClient.calcDocument(this.context, data.session, null, Entities.Callback.PROVISION_CALC);
     }
     catch (error) {
       await this.trackingService.trackError(this.nextContext, data.session,  error instanceof Error ? error.message : String(error));

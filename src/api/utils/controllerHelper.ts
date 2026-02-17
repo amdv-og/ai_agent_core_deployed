@@ -1,9 +1,9 @@
 import { Service, Inject } from "typedi";
-import { Response } from "express";
+import { Response, Request } from "express";
 
 import { TokenService, FileTypeService, ChoiceService } from "../../infrastructure/services/imports";
 import { BadRequestError, AuthorizationError, InternalError, NotFoundError } from "../../core/entities/error";
-import { CallbackData } from "../../core/entities/callback";
+import { CallbackData, CallbackStatus } from "../../core/entities/callback";
 import { Choice } from "../../core/entities/choice";
 
 
@@ -30,9 +30,12 @@ export class ControllerHelper {
    */
   async withErrorHandling<T>(
     action: () => Promise<T>,
+    //req: Request,
     res: Response
   ): Promise<T | Response> {
+    
     try {
+      //req.headers.authorization;
       return await action();
     } catch (error) {
       if (error instanceof NotFoundError) {
@@ -77,7 +80,7 @@ export class ControllerHelper {
         throw new AuthorizationError("Invalid token");
       }
       // Validate the callback data
-      if (!data || !data.status || data.status !== "success") {
+      if (!data || !data.status || data.status !== CallbackStatus.COMPLETED) {
         throw new BadRequestError("Callback data is invalid or missing status");
       }
       await action(data);

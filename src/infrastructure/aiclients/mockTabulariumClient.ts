@@ -1,9 +1,9 @@
 import { Service, Inject } from "typedi";
 import { v4 as uuidv4 } from "uuid";
 
-import { IAISvcClient } from "../../core/interfaces/aiSvcClient";
-import * as Services from "../../infrastructure/services/imports"
+import * as Services from "../services/imports"
 import * as Entities from "../../core/entities/imports";
+import * as Interfaces from "../../core/interfaces/imports";
 
 const metaData: Entities.MetaData = {
     heading: {
@@ -16,7 +16,14 @@ const metaData: Entities.MetaData = {
 };
 
 @Service()
-export class MockTabulariumClient implements IAISvcClient {
+export class MockTabulariumClient implements
+    Interfaces.IComputeClient,
+    Interfaces.IIndexClient,
+    Interfaces.IRecordClient,
+    Interfaces.IRedactClient,
+    Interfaces.IReprocessClient,
+    Interfaces.ISessionClient
+     {
 
     constructor(
         @Inject() private readonly tokenService: Services.TokenService,
@@ -39,7 +46,7 @@ export class MockTabulariumClient implements IAISvcClient {
         const token = this.tokenService.sign(data);
         const url = `${process.env.CALLBACK_URL}/${callback}?${data}`;
         const result: Entities.CallbackData = {
-            status: Entities.CallbackStatus.SUCCESS,
+            status: Entities.CallbackStatus.COMPLETED,
             data: "https://example.com/test.json"
 
         }
@@ -53,23 +60,13 @@ export class MockTabulariumClient implements IAISvcClient {
         });
     }
 
-    async feedbackDocument(context: Entities.WorkflowContext, session: string, segment: string, message: string): Promise<Entities.Feedback> {
-        
-        const feedback:Entities.Feedback = {
-            segment: segment,
-            message: message,
-            accepted: true,
-            data: "The feedback has been processed successfully.",
-        };
-        return feedback;
-    }
 
-    async refineDocument(context: Entities.WorkflowContext, session: string, segment: string, message: string, callback: Entities.Callback): Promise<void> {
+    async reprocessDocument(context: Entities.WorkflowContext, session: string, segment: string, callback: Entities.Callback): Promise<void> {
         const data = `sn=${session}`;
         const token = this.tokenService.sign(data);
         const url = `${process.env.CALLBACK_URL}/${callback}?${data}`;
         const result: Entities.CallbackData = {
-            status: Entities.CallbackStatus.SUCCESS,
+            status: Entities.CallbackStatus.COMPLETED,
             data: "https://example.com/test.json"
 
         }
@@ -88,7 +85,7 @@ export class MockTabulariumClient implements IAISvcClient {
         const token = this.tokenService.sign(data);
         const url = `${process.env.CALLBACK_URL}/${callback}?${data}`;
         const result: Entities.CallbackData = {
-            status: Entities.CallbackStatus.SUCCESS,
+            status: Entities.CallbackStatus.COMPLETED,
             data: "https://example.com/test.json"
 
         }
@@ -107,7 +104,7 @@ export class MockTabulariumClient implements IAISvcClient {
         const token = this.tokenService.sign(data);
         const url = `${process.env.CALLBACK_URL}/${callback}?${data}`;
         const result: Entities.CallbackData = {
-            status: Entities.CallbackStatus.SUCCESS,
+            status: Entities.CallbackStatus.COMPLETED,
             data: "https://example.com/test.json"
 
         }
@@ -126,7 +123,7 @@ export class MockTabulariumClient implements IAISvcClient {
         const token = this.tokenService.sign(data);
         const url = `${process.env.CALLBACK_URL}/${callback}?${data}`;
         const result: Entities.CallbackData = {
-            status: Entities.CallbackStatus.SUCCESS,
+            status: Entities.CallbackStatus.COMPLETED,
             data: "https://example.com/test.json"
 
         }
@@ -141,12 +138,12 @@ export class MockTabulariumClient implements IAISvcClient {
     }
 
 
-    async endorseDocument(context:Entities.WorkflowContext, session: string, metaData: Entities.MetaData, callback: Entities.Callback): Promise<void> {
+    async endorseDocument(context: Entities.WorkflowContext, session: string, metaData: Entities.MetaData, callback: Entities.Callback): Promise<void> {
         const data = `sn=${session}`;
         const token = this.tokenService.sign(data);
         const url = `${process.env.CALLBACK_URL}/${callback}?${data}`;
         const result: Entities.CallbackData = {
-            status: Entities.CallbackStatus.SUCCESS,
+            status: Entities.CallbackStatus.COMPLETED,
             data: "https://example.com/test.json"
 
         }

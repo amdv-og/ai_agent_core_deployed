@@ -8,18 +8,21 @@ import { Service } from "typedi";
 export class SegmentService {
     // Predefined list of segments
     private readonly segments = [
+        "endorsement",
+        "property",
+        "legal",
         "party",
         "reference",
-        "notary",
+        "monetary",
+        "acknowledgment",
         "court",
-        "misc",
-        "legal",
-        "property",
-        "transaction",
-        "endorsement",
         "vital",
+        "transaction",
         "fiscal",
-        "secrets"
+        "secrets",
+        "chain",
+        "history",
+        "undefined"
     ];
     /**
      * Validates if the provided segment is part of the predefined segments.

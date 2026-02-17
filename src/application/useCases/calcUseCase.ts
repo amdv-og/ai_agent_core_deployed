@@ -1,6 +1,7 @@
 import { Inject, Service } from "typedi";
 
-import * as Services from "../../infrastructure/services/imports"
+import { TOKENS } from "../../core/tokens";
+import * as Interfaces from "../../core/interfaces/imports";
 import * as Entities from "../../core/entities/imports";
 
 /** Data structure for calc use case.
@@ -22,7 +23,7 @@ export interface CalcData {
 export class CalcUseCase {
 
     constructor(
-        @Inject(Services.TOKENS.IAISvcClient) private readonly aiSvcClient: Services.IAISvcClient
+        @Inject(TOKENS.IComputeClient) private readonly computeClient: Interfaces.IComputeClient
     ) { }
 
     /**
@@ -36,7 +37,9 @@ export class CalcUseCase {
             step: Entities.Step.CALC
         };
 
-        await this.aiSvcClient.calcDocument(context, data.session, data.metaData, Entities.Callback.CALC);
+        console.log(`Executing CalcUseCase for session: ${data.session}`);
+
+        await this.computeClient.calcDocument(context, data.session, data.metaData, Entities.Callback.CALC);
     }
 
 }

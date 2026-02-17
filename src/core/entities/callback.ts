@@ -3,20 +3,20 @@
  * The Callback enum is used to identify the type of callback being processed,
  * allowing for better organization and handling of callback requests.
  */
-export enum Callback {
-    INDEX = "index",
-    REFINE = "refine",
-    CALC = "calc",
-    PROVISION_INDEX = "provision/index",
-    PROVISION_CALC = "provision/calc",
-    REDACT = "redact",
-    AUTOREDACT_INDEX = "autoredact/index",
-    AUTOREDACT_REDACT = "autoredact/redact",
-    ENDORSE = "endorse",
-    AUTORECORD_INDEX = "autorecord/index",
-    AUTORECORD_CALC = "autorecord/calc",
-    AUTORECORD_REDACT = "autorecord/redact",
-    AUTORECORD_ENDORSE = "autorecord/endorse",
+export class Callback {
+    static readonly INDEX = "index";
+    static readonly REPROCESS = "reprocess";
+    static readonly CALC = "calc";
+    static readonly PROVISION_INDEX = "provision/index";
+    static readonly PROVISION_CALC = "provision/calc";
+    static readonly REDACT = "redact";
+    static readonly AUTOREDACT_INDEX = "autoredact/index";
+    static readonly AUTOREDACT_REDACT = "autoredact/redact";
+    static readonly ENDORSE = "endorse";
+    static readonly AUTORECORD_INDEX = "autorecord/index";
+    static readonly AUTORECORD_CALC = "autorecord/calc";
+    static readonly AUTORECORD_REDACT = "autorecord/redact";
+    static readonly AUTORECORD_ENDORSE = "autorecord/endorse";
 
 }
 
@@ -25,7 +25,7 @@ export enum Callback {
  * It can be used to indicate whether the operation was successful, encountered an error, or is still processing.
  */
 export enum CallbackStatus {
-    SUCCESS = "success",
+    COMPLETED = "completed",
     ERROR = "error",
     PROCESSING = "processing"
 }

@@ -1,6 +1,7 @@
 import { Inject, Service } from "typedi";
 
-import * as Services from "../../infrastructure/services/imports"
+import { TOKENS } from "../../core/tokens";
+import * as Interfaces from "../../core/interfaces/imports";
 import * as Entities from "../../core/entities/imports";
 
 /** Data structure for redact use case.
@@ -21,7 +22,7 @@ export interface RedactData {
 @Service()
 export class RedactUseCase {
   constructor(
-    @Inject(Services.TOKENS.IAISvcClient) private readonly aiSvcClient: Services.IAISvcClient
+    @Inject(TOKENS.IRedactClient) private readonly redactClient: Interfaces.IRedactClient
   ) { }
 
   /**
@@ -35,6 +36,6 @@ export class RedactUseCase {
       step: Entities.Step.REDACT
     };
 
-    await this.aiSvcClient.redactDocument(context, data.session, data.metaData, Entities.Callback.REDACT);
+    await this.redactClient.redactDocument(context, data.session, data.metaData, Entities.Callback.REDACT);
   }
 }

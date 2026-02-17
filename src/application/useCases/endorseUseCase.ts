@@ -1,6 +1,7 @@
 import { Inject, Service } from "typedi";
 
-import * as Services from "../../infrastructure/services/imports"
+import { TOKENS } from "../../core/tokens";
+import * as Interfaces from "../../core/interfaces/imports";
 import * as Entities from "../../core/entities/imports";
 
 /** Data structure for endorse use case.
@@ -22,7 +23,7 @@ export interface EndorseData {
 export class EndorseUseCase {
 
   constructor(
-    @Inject(Services.TOKENS.IAISvcClient) private readonly aiSvcClient: Services.IAISvcClient
+    @Inject(TOKENS.IRecordClient) private readonly recordClient: Interfaces.IRecordClient
   ) { }
 
   /**
@@ -36,6 +37,6 @@ export class EndorseUseCase {
       step: Entities.Step.ENDORSE
     };
 
-    await this.aiSvcClient.endorseDocument(context, data.session, data.metaData, Entities.Callback.ENDORSE);
+    await this.recordClient.endorseDocument(context, data.session, data.metaData, Entities.Callback.ENDORSE);
   }
 }

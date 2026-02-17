@@ -2,8 +2,10 @@
 import { Service, Inject } from "typedi";
 import { Readable } from "stream";
 
-import * as Services from "../../infrastructure/services/imports";
+import { TOKENS } from "../../core/tokens";
+import * as Interfaces from "../../core/interfaces/imports";
 import * as Entities from "../../core/entities/imports";
+import * as Services from "../../infrastructure/services/imports";
 
 /** Helper class for use cases.
  * Contains common methods used across different use cases.
@@ -11,9 +13,11 @@ import * as Entities from "../../core/entities/imports";
 @Service()
 export class UseCaseHelper {
     constructor(
-        @Inject(Services.TOKENS.IBlobService) private readonly blobService: Services.IBlobService,
-        @Inject(Services.TOKENS.IAISvcClient) private readonly aiSvcClient: Services.IAISvcClient,
-        @Inject(Services.TOKENS.ITrackingService) private readonly trackingService: Services.ITrackingService,
+        @Inject(TOKENS.IBlobService) private readonly blobService: Interfaces.IBlobService,
+        @Inject(TOKENS.ISessionClient) private readonly sessionClient: Interfaces.ISessionClient,
+        @Inject(TOKENS.IIndexClient) private readonly indexClient: Interfaces.IIndexClient,
+        //@Inject(TOKENS.IAISvcClient) private readonly aiSvcClient: Interfaces.IAISvcClient,
+        @Inject(TOKENS.ITrackingService) private readonly trackingService: Interfaces.ITrackingService,
         @Inject() private readonly metaDataService: Services.MetaDataService
     ) { }
 
@@ -33,7 +37,7 @@ export class UseCaseHelper {
         documentType: string,
         stream: Readable,
         choice: Entities.ChoiceItem[],
-        callback: Entities.Callback
+        callback: string
     ): Promise<string> {
         let session: string;
         let token: Entities.SessionToken;
@@ -41,8 +45,8 @@ export class UseCaseHelper {
 
         currentContext.step = Entities.Step.SESSION;
         try {
-            session = await this.aiSvcClient.createSession(context, documentType);
-            token = await this.aiSvcClient.getSession(context, session);
+            session = await this.sessionClient.createSession(context, documentType);
+            token = await this.sessionClient.getSession(context, session);
             await this.trackingService.trackSuccess(currentContext, session);
         }
         catch (error) {
@@ -65,7 +69,7 @@ export class UseCaseHelper {
 
         currentContext.step = Entities.Step.INDEX;
         try {
-            await this.aiSvcClient.indexDocument(context, session, document, choice, callback);
+            await this.indexClient.indexDocument(context, session, document, choice, callback);
         }
         catch (error) {
             const message = "Failed to index document";
