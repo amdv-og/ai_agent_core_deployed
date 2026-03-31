@@ -103,7 +103,12 @@
         <p class="subtitle">Upload documents to test TabulariumAI workflows</p>
 
         <div class="info-box">
-            <p><strong>Server:</strong> http://localhost:3000</p>
+            <p><strong>Server:</strong> <span id="serverUrl"></span></p>
+            <script>
+                // Detect server URL automatically
+                const serverUrl = window.location.origin;
+                document.getElementById('serverUrl').textContent = serverUrl;
+            </script>
             <p><strong>Supported:</strong> PDF, TIFF, JPG, PNG</p>
             <p><strong>Max Size:</strong> ~10MB recommended</p>
         </div>
@@ -180,7 +185,8 @@
 
             try {
                 const startTime = Date.now();
-                const response = await fetch(`http://localhost:3000/${workflow}`, {
+                const apiUrl = `${window.location.origin}/${workflow}`;
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     body: formData
                 });

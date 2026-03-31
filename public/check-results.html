@@ -87,9 +87,12 @@
         <p class="subtitle">Check if results have been received for your session</p>
 
         <div class="info-box">
-            <p><strong>⚠️ Demo Limitation:</strong></p>
-            <p>The demo backend at <code>demobackend.tabulariumai.com</code> cannot send callbacks to <code>localhost:3000</code>.</p>
-            <p>In production, you would set up a publicly accessible callback URL (using ngrok, a cloud server, etc.)</p>
+            <p><strong>✅ Deployed App:</strong></p>
+            <p>This app is deployed at <code><span id="deployedUrl"></span></code> and can receive callbacks from TabulariumAI.</p>
+            <p>Upload a document and check back here in 60 seconds to see the results!</p>
+            <script>
+                document.getElementById('deployedUrl').textContent = window.location.host;
+            </script>
         </div>
 
         <label for="sessionInput"><strong>Session ID:</strong></label>
@@ -131,7 +134,7 @@
 
             try {
                 // Try to get session data from the backend
-                const response = await fetch(`http://localhost:3000/api/session/${sessionId}`);
+                const response = await fetch(`${window.location.origin}/api/session/${sessionId}`);
 
                 if (response.ok) {
                     const data = await response.json();
@@ -170,7 +173,7 @@
             resultDiv.textContent = '⏳ Checking for received callbacks...';
 
             try {
-                const response = await fetch('http://localhost:3000/api/callbacks');
+                const response = await fetch(`${window.location.origin}/api/callbacks`);
 
                 if (response.ok) {
                     const data = await response.json();
