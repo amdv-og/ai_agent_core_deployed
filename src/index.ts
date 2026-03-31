@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import express from "express";
 import cors from "cors";
+import path from "path";
 import { useContainer, useExpressServer } from "routing-controllers";
 import dotenv, { configDotenv } from "dotenv";
 
@@ -33,6 +34,9 @@ const app = express();
 // Enable CORS for all routes
 app.use(cors());
 
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, '../public')));
+
 //app.use(express.json());
 
 useExpressServer(app, {
@@ -63,6 +67,10 @@ useExpressServer(app, {
 
 dotenv.config(); // Ensure .env file is loaded
 
+// Only listen if not in serverless environment (Vercel)
+if (process.env.VERCEL !== '1') {
+  app.listen(3000, () => console.log("API running on http://localhost:3000"));
+}
 
-app.listen(3000, () => console.log("API running on http://localhost:3000"));
 export { app }; // Export the app for testing or further configuration
+export default app; // Default export for Vercel

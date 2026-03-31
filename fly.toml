@@ -1,0 +1,28 @@
+[app]
+  name = "ai-agent-core"
+  primary_region = "sjc"
+
+[build]
+
+[env]
+  NODE_VERSION = "22.22.0"
+  API_KEY = "demo:123456789_abc"
+  SESSION_URL = "https://demobackend.tabulariumai.com/v1"
+  INDEX_URL = "https://demobackend.tabulariumai.com/v1"
+  FEEDBACK_URL = "https://demobackend.tabulariumai.com/v1"
+  COMPUTE_URL = "https://demobackend.tabulariumai.com/v1"
+  RECORD_URL = "https://demobackend.tabulariumai.com/v1"
+  REDACT_URL = "https://demobackend.tabulariumai.com/v1"
+  REPROCESS_URL = "https://demobackend.tabulariumai.com/v1"
+
+[[services]]
+  internal_port = 3000
+  protocol = "tcp"
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
