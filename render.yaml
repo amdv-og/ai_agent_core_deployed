@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: ai-agent-core
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22.22.0
+      - key: API_KEY
+        value: demo:123456789_abc
+      - key: SESSION_URL
+        value: https://demobackend.tabulariumai.com/v1
+      - key: INDEX_URL
+        value: https://demobackend.tabulariumai.com/v1
+      - key: FEEDBACK_URL
+        value: https://demobackend.tabulariumai.com/v1
+      - key: COMPUTE_URL
+        value: https://demobackend.tabulariumai.com/v1
+      - key: RECORD_URL
+        value: https://demobackend.tabulariumai.com/v1
+      - key: REDACT_URL
+        value: https://demobackend.tabulariumai.com/v1
+      - key: REPROCESS_URL
+        value: https://demobackend.tabulariumai.com/v1
+      - key: CALLBACK_URL
+        value: https://ai-agent-core.onrender.com/callback
