@@ -44,11 +44,35 @@ export class IndexController {
   @UseBefore(upload.single('file'))
   async index(
     @Req() req: Request, @Res() res: Response,
-    @BodyParam("choice") choice: Choice,
+    @BodyParam("choice") choiceParam?: string | Choice,
   ) {
     return await this.helper.withErrorHandling(async () => {
+      // Debug logging
+      console.log('Received choiceParam:', choiceParam);
+      console.log('Type:', typeof choiceParam);
+      console.log('req.body:', req.body);
+
       // Inialize indexing and get file type
       const file = req.file as Express.Multer.File;
+
+      // Parse choice if it's a string (from multipart form-data)
+      let choice: Choice;
+      if (typeof choiceParam === 'string') {
+        try {
+          choice = JSON.parse(choiceParam);
+        } catch (e) {
+          console.log('JSON parse error:', e);
+          choice = choiceParam as any;
+        }
+      } else if (choiceParam) {
+        choice = choiceParam as Choice;
+      } else {
+        // Try to get from req.body directly
+        choice = req.body.choice ? (typeof req.body.choice === 'string' ? JSON.parse(req.body.choice) : req.body.choice) : undefined as any;
+      }
+
+      console.log('Parsed choice:', JSON.stringify(choice));
+
       const fileType = this.helper.initIndexing(file, choice);
       // Execute the use case
       const data: IndexData = {

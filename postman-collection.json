@@ -1,0 +1,316 @@
+{
+  "info": {
+    "name": "AI Agent Core API",
+    "description": "TabulariumAI document processing workflows",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Index Workflow",
+      "item": [
+        {
+          "name": "Start Indexing",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "choice",
+                  "value": "{\"items\":[{\"service\":\"Recognition\",\"level\":3}]}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/index",
+              "host": ["{{baseUrl}}"],
+              "path": ["index"]
+            },
+            "description": "Extract metadata from a document"
+          },
+          "response": []
+        },
+        {
+          "name": "Index Callback",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session\": \"test-session-123\",\n  \"metadata\": {\n    \"heading\": {\n      \"title\": \"Deed of Trust\",\n      \"class\": \"Deed\",\n      \"explanation\": \"Real property transfer document\"\n    },\n    \"indexes\": [\n      {\n        \"name\": \"grantor\",\n        \"value\": \"John Smith\",\n        \"page\": \"1\",\n        \"aspect\": \"party\",\n        \"source\": \"text\",\n        \"explanation\": \"Person transferring property\"\n      }\n    ],\n    \"secrets\": [],\n    \"fees\": []\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/index/callback",
+              "host": ["{{baseUrl}}"],
+              "path": ["index", "callback"]
+            },
+            "description": "Receive indexing results from TabulariumAI"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Calc Workflow",
+      "item": [
+        {
+          "name": "Calculate Fees",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "choice",
+                  "value": "{\"items\":[{\"service\":\"Compute\",\"level\":2}]}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/calc",
+              "host": ["{{baseUrl}}"],
+              "path": ["calc"]
+            },
+            "description": "Calculate recording fees for a document"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Redact Workflow",
+      "item": [
+        {
+          "name": "Start Redaction",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "choice",
+                  "value": "{\"items\":[{\"service\":\"Redact\",\"level\":1}]}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/redact",
+              "host": ["{{baseUrl}}"],
+              "path": ["redact"]
+            },
+            "description": "Start manual redaction with AI assistance"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AutoRedact Workflow",
+      "item": [
+        {
+          "name": "Auto Redact Document",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "choice",
+                  "value": "{\"items\":[{\"service\":\"AutoRedact\",\"level\":3}]}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/autoredact",
+              "host": ["{{baseUrl}}"],
+              "path": ["autoredact"]
+            },
+            "description": "Automatically detect and redact sensitive information"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AutoRecord Workflow",
+      "item": [
+        {
+          "name": "Auto Record Document",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "choice",
+                  "value": "{\"items\":[{\"service\":\"AutoRecord\",\"level\":3}]}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/autorecord",
+              "host": ["{{baseUrl}}"],
+              "path": ["autorecord"]
+            },
+            "description": "Complete end-to-end automated recording workflow"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Provision Workflow",
+      "item": [
+        {
+          "name": "Provision Document",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "choice",
+                  "value": "{\"items\":[{\"service\":\"Provision\",\"level\":2}]}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/provision",
+              "host": ["{{baseUrl}}"],
+              "path": ["provision"]
+            },
+            "description": "Provision and prepare documents for recording"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Endorse Workflow",
+      "item": [
+        {
+          "name": "Add Endorsement",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "choice",
+                  "value": "{\"items\":[{\"service\":\"Endorse\",\"level\":1}]}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/endorse",
+              "host": ["{{baseUrl}}"],
+              "path": ["endorse"]
+            },
+            "description": "Generate and add official endorsements"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reprocess Workflow",
+      "item": [
+        {
+          "name": "Reprocess Segment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "notice",
+                  "value": "segment-id-123",
+                  "type": "text"
+                },
+                {
+                  "key": "choice",
+                  "value": "{\"items\":[{\"service\":\"Reprocess\",\"level\":2}]}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reprocess",
+              "host": ["{{baseUrl}}"],
+              "path": ["reprocess"]
+            },
+            "description": "Re-analyze a specific document segment"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

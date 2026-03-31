@@ -1,0 +1,643 @@
+openapi: 3.0.3
+info:
+  title: AI Agent Core API
+  description: |
+    RESTful API for document processing workflows powered by TabulariumAI.
+
+    Enables automated indexing, fee calculation, redaction, and recording of official documents.
+
+    ## Workflows
+    - **Index** - Extract metadata from documents
+    - **Calc** - Calculate recording fees
+    - **Redact** - Manual redaction with AI assistance
+    - **AutoRedact** - Fully automated redaction
+    - **AutoRecord** - End-to-end automated recording
+    - **Provision** - Document provisioning
+    - **Endorse** - Add official endorsements
+    - **Reprocess** - Re-analyze specific segments
+
+  version: 1.0.0
+  contact:
+    name: TabulariumAI Support
+    url: https://tabulariumai.com
+    email: support@tabulariumai.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+  - url: https://api.yourdomain.com
+    description: Production server
+
+tags:
+  - name: Index
+    description: Document indexing and metadata extraction
+  - name: Calc
+    description: Fee calculation
+  - name: Redact
+    description: Document redaction
+  - name: AutoRedact
+    description: Automated redaction
+  - name: AutoRecord
+    description: Automated recording workflow
+  - name: Provision
+    description: Document provisioning
+  - name: Endorse
+    description: Endorsement generation
+  - name: Reprocess
+    description: Segment reprocessing
+
+paths:
+  /index:
+    post:
+      tags:
+        - Index
+      summary: Start document indexing
+      description: Upload a document and start the indexing workflow to extract metadata
+      operationId: startIndexing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+                - choice
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Document to index (PDF, TIFF, etc.)
+                choice:
+                  $ref: '#/components/schemas/Choice'
+      responses:
+        '200':
+          description: Indexing started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /index/callback:
+    post:
+      tags:
+        - Index
+      summary: Receive indexing results
+      description: Callback endpoint for TabulariumAI to send indexing results
+      operationId: indexCallback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndexCallbackRequest'
+      responses:
+        '200':
+          description: Results received successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+
+  /calc:
+    post:
+      tags:
+        - Calc
+      summary: Calculate recording fees
+      description: Calculate fees for document recording based on document type and jurisdiction
+      operationId: calculateFees
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+                - choice
+              properties:
+                file:
+                  type: string
+                  format: binary
+                choice:
+                  $ref: '#/components/schemas/Choice'
+      responses:
+        '200':
+          description: Fee calculation started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /calc/callback:
+    post:
+      tags:
+        - Calc
+      summary: Receive fee calculation results
+      operationId: calcCallback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalcCallbackRequest'
+      responses:
+        '200':
+          description: Results received
+
+  /redact:
+    post:
+      tags:
+        - Redact
+      summary: Start manual redaction
+      description: Start redaction workflow with AI assistance for identifying sensitive data
+      operationId: startRedaction
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+                - choice
+              properties:
+                file:
+                  type: string
+                  format: binary
+                choice:
+                  $ref: '#/components/schemas/Choice'
+      responses:
+        '200':
+          description: Redaction started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /redact/callback:
+    post:
+      tags:
+        - Redact
+      summary: Receive redaction results
+      operationId: redactCallback
+      responses:
+        '200':
+          description: Results received
+
+  /autoredact:
+    post:
+      tags:
+        - AutoRedact
+      summary: Automated redaction
+      description: Automatically detect and redact sensitive information (SSN, DOB, etc.)
+      operationId: autoRedact
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+                - choice
+              properties:
+                file:
+                  type: string
+                  format: binary
+                choice:
+                  $ref: '#/components/schemas/Choice'
+      responses:
+        '200':
+          description: Auto-redaction started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /autoredact/callback:
+    post:
+      tags:
+        - AutoRedact
+      summary: Receive auto-redaction results
+      operationId: autoRedactCallback
+      responses:
+        '200':
+          description: Results received
+
+  /autorecord:
+    post:
+      tags:
+        - AutoRecord
+      summary: Automated recording workflow
+      description: Complete end-to-end automated recording from intake to final package
+      operationId: autoRecord
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+                - choice
+              properties:
+                file:
+                  type: string
+                  format: binary
+                choice:
+                  $ref: '#/components/schemas/Choice'
+      responses:
+        '200':
+          description: Auto-record workflow started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /autorecord/callback:
+    post:
+      tags:
+        - AutoRecord
+      summary: Receive auto-record results
+      operationId: autoRecordCallback
+      responses:
+        '200':
+          description: Results received
+
+  /provision:
+    post:
+      tags:
+        - Provision
+      summary: Provision documents
+      description: Prepare and provision documents for recording
+      operationId: provisionDocument
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+                - choice
+              properties:
+                file:
+                  type: string
+                  format: binary
+                choice:
+                  $ref: '#/components/schemas/Choice'
+      responses:
+        '200':
+          description: Provisioning started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /provision/callback:
+    post:
+      tags:
+        - Provision
+      summary: Receive provisioning results
+      operationId: provisionCallback
+      responses:
+        '200':
+          description: Results received
+
+  /endorse:
+    post:
+      tags:
+        - Endorse
+      summary: Add endorsements
+      description: Generate and add official endorsements to documents
+      operationId: endorseDocument
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+                - choice
+              properties:
+                file:
+                  type: string
+                  format: binary
+                choice:
+                  $ref: '#/components/schemas/Choice'
+      responses:
+        '200':
+          description: Endorsement started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /endorse/callback:
+    post:
+      tags:
+        - Endorse
+      summary: Receive endorsement results
+      operationId: endorseCallback
+      responses:
+        '200':
+          description: Results received
+
+  /reprocess:
+    post:
+      tags:
+        - Reprocess
+      summary: Reprocess document segment
+      description: Re-analyze a specific segment of a document
+      operationId: reprocessSegment
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+                - notice
+                - choice
+              properties:
+                file:
+                  type: string
+                  format: binary
+                notice:
+                  type: string
+                  description: Segment identifier to reprocess
+                choice:
+                  $ref: '#/components/schemas/Choice'
+      responses:
+        '200':
+          description: Reprocessing started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /reprocess/callback:
+    post:
+      tags:
+        - Reprocess
+      summary: Receive reprocessing results
+      operationId: reprocessCallback
+      responses:
+        '200':
+          description: Results received
+
+components:
+  schemas:
+    Choice:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChoiceItem'
+      example:
+        items:
+          - service: Recognition
+            level: 3
+
+    ChoiceItem:
+      type: object
+      required:
+        - service
+        - level
+      properties:
+        service:
+          type: string
+          enum:
+            - Recognition
+            - Compute
+            - Redact
+            - AutoRedact
+            - AutoRecord
+            - Provision
+            - Endorse
+            - Reprocess
+          description: Service type to use
+        level:
+          type: integer
+          minimum: 1
+          maximum: 3
+          description: Processing level (1=basic, 2=standard, 3=advanced)
+
+    SessionResponse:
+      type: object
+      properties:
+        session:
+          type: string
+          description: Unique session identifier
+          example: abc123-session-id
+
+    IndexCallbackRequest:
+      type: object
+      properties:
+        session:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/MetaData'
+
+    CalcCallbackRequest:
+      type: object
+      properties:
+        session:
+          type: string
+        fees:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeeItem'
+        total:
+          type: number
+          format: double
+
+    MetaData:
+      type: object
+      properties:
+        heading:
+          $ref: '#/components/schemas/MetaHeader'
+        secrets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Secret'
+        indexes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Index'
+        fees:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeeItem'
+
+    MetaHeader:
+      type: object
+      properties:
+        title:
+          type: string
+        class:
+          type: string
+        explanation:
+          type: string
+        number:
+          type: string
+        date:
+          type: string
+        total:
+          type: number
+
+    Index:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Field name (e.g., grantor, grantee)
+        value:
+          type: string
+          description: Extracted value
+        page:
+          type: string
+          description: Page number where found
+        aspect:
+          type: string
+          description: Field category
+        source:
+          type: string
+          description: Extraction source
+        explanation:
+          type: string
+          description: Field description
+        ambiguous:
+          type: string
+          description: Ambiguity warning
+        verification:
+          type: string
+        segment:
+          type: string
+        code:
+          type: string
+
+    Secret:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Secret type (SSN, DOB, etc.)
+        value:
+          type: string
+          description: Redacted value
+        page:
+          type: string
+        source:
+          type: string
+        explanation:
+          type: string
+        ambiguous:
+          type: string
+        code:
+          type: string
+
+    FeeItem:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Fee name
+        amount:
+          type: number
+          format: double
+          description: Fee amount in dollars
+        explanation:
+          type: string
+          description: Fee description
+        formula:
+          type: string
+          description: Calculation formula
+        code:
+          type: string
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        details:
+          type: string
+          description: Additional context
+        code:
+          type: string
+          description: Error code
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: Invalid request: valid file is required
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: Resource not found
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: Processing failed
+            details: Unable to extract text from document

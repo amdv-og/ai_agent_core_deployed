@@ -3,3 +3,9 @@ dist/
 node_modules/
 mock-data/
 package-lock.json
+.env
+.server.pid
+.tunnel.pid
+server.log
+tunnel.log
+*.log

@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import express from "express";
+import cors from "cors";
 import { useContainer, useExpressServer } from "routing-controllers";
 import dotenv, { configDotenv } from "dotenv";
 
@@ -20,20 +21,25 @@ import { RedactController } from "./api/controllers/redactController";
 import { RedactCallbackController } from "./api/controllers/redactCallbackController";
 import { ReprocessController } from "./api/controllers/reprocessController";
 import { ReprocessCallbackController } from "./api/controllers/reprocessCallbackController";
+import { ResultsController } from "./api/controllers/resultsController";
 
 
 
-setupContainer(); 
+setupContainer();
 useContainer(Container);
 
 const app = express();
+
+// Enable CORS for all routes
+app.use(cors());
+
 //app.use(express.json());
 
 useExpressServer(app, {
   controllers: [
-    IndexController, 
+    IndexController,
     IndexCallbackController,
-    CalcController, 
+    CalcController,
     CalcCallbackController,
     EndorseController,
     EndorseCallbackController,
@@ -43,10 +49,11 @@ useExpressServer(app, {
     RedactCallbackController,
     AutoRedactController,
     AutoRedactCallbackController,
-    AutoRecordController, 
-    AutoRecordCallbackController, 
+    AutoRecordController,
+    AutoRecordCallbackController,
     ProvisionController,
     ProvisionCallbackController,
+    ResultsController,
 
   ],
   defaultErrorHandler: false
